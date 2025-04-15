@@ -3,7 +3,7 @@ import os
 
 
 # Initialize Cohere API Client
-co = cohere.Client(os.environ.get('COHERE_API_KEY'))  # Replace with your Cohere API key
+co = cohere.Client('OjrNKaz018zImi1PvWfvIDloG3Jhdlo8P1cIBryO')  # Replace with your Cohere API key
 
 
 def generate_study_plan_ai(student):
