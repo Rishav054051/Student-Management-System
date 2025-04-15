@@ -220,7 +220,7 @@ def export_pdf():
 
 # ------------------------ STUDY PLAN GENERATOR ------------------------
 # Initialize Cohere API Client
-app.secret_key = os.environ.get('SECRET_KEY', 'fallback_secret_key')  # Replace with your API key
+co = cohere.Client('OjrNKaz018zImi1PvWfvIDloG3Jhdlo8P1cIBryO')  # Replace with your API key
 @app.route("/study_plan/<int:serial_number>")
 def study_plan(serial_number):
     # Fetch student data from the database or student list
@@ -241,5 +241,6 @@ def study_plan(serial_number):
 
 # ------------------------ RUN APP ------------------------
 if __name__ == "__main__":
-    from waitress import serve
-    serve(app, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
+    app.run(debug=True)
+    # from waitress import serve
+    # serve(app, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
