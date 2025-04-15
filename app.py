@@ -10,7 +10,7 @@ from utils import get_student_data, generate_study_plan_ai
 
 
 app = Flask(__name__)
-app.secret_key = 'd4f7e05d2b2448a9afed2a9937f9a5f4b5d4576f84ebcdf29259a9f2b8b50952'  # Change to a strong key!
+app.secret_key = 'SECRET_KEY'  # Change to a strong key!
 
 # ------------------------ DATABASE SETUP ------------------------
 def init_db():

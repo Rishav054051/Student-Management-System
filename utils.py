@@ -5,7 +5,7 @@ co = cohere.Client('OjrNKaz018zImi1PvWfvIDloG3Jhdlo8P1cIBryO')  # Replace with y
 
 def generate_study_plan_ai(student):
     import cohere
-    co = cohere.Client('2cMoENwLIbbF5XNamWZuwWewmehx6VCqvY0oCPyS')  # Replace with your Cohere API key
+    co = cohere.Client('COHERE_API_KEY')  # Replace with your Cohere API key
 
     name = student[1]
     subjects = ['Math', 'Science', 'English', 'History', 'Geography']
