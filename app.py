@@ -102,21 +102,29 @@ def add_student():
     if request.method == 'POST':
         name = request.form['name']
         roll_number = request.form['roll_number']
-        subject1 = int(request.form['subject1'])
-        subject2 = int(request.form['subject2'])
-        subject3 = int(request.form['subject3'])
-        subject4 = int(request.form['subject4'])
-        subject5 = int(request.form['subject5'])
-        
+        try:
+            subject1 = int(request.form['subject1'])
+            subject2 = int(request.form['subject2'])
+            subject3 = int(request.form['subject3'])
+            subject4 = int(request.form['subject4'])
+            subject5 = int(request.form['subject5'])
+
+            # Validate range
+            for mark in [subject1, subject2, subject3, subject4, subject5]:
+                if mark < 0 or mark > 100:
+                    return render_template('add_student.html', error="Marks must be between 0 and 100")
+
+        except ValueError:
+            return render_template('add_student.html', error="Invalid marks entered")
+
         conn = sqlite3.connect('student.db')
         cursor = conn.cursor()
 
-        # Get the next available serial number
+        # Get the next serial number
         cursor.execute("SELECT MAX(serial_number) FROM students")
         max_serial_number = cursor.fetchone()[0]
         next_serial_number = max_serial_number + 1 if max_serial_number else 1
 
-        # Insert student with the new serial number
         cursor.execute('''INSERT INTO students 
                           (serial_number, name, roll_number, subject1, subject2, subject3, subject4, subject5) 
                           VALUES (?, ?, ?, ?, ?, ?, ?, ?)''',
@@ -124,7 +132,9 @@ def add_student():
         conn.commit()
         conn.close()
         return redirect(url_for('dashboard'))
+    
     return render_template('add_student.html')
+
 
 # ------------------------ EDIT STUDENT ------------------------
 @app.route('/edit/<int:serial_number>', methods=['GET', 'POST'])
@@ -135,26 +145,46 @@ def edit_student(serial_number):
     conn = sqlite3.connect('student.db')
     cursor = conn.cursor()
     if request.method == 'POST':
-        updated_data = (
-            request.form['name'],
-            request.form['roll_number'],
-            int(request.form['subject1']),
-            int(request.form['subject2']),
-            int(request.form['subject3']),
-            int(request.form['subject4']),
-            int(request.form['subject5']),
-            serial_number  # Use serial_number instead of id
-        )
-        cursor.execute('''UPDATE students SET name=?, roll_number=?, subject1=?, subject2=?,
-                          subject3=?, subject4=?, subject5=? WHERE serial_number=?''', updated_data)
-        conn.commit()
-        conn.close()
-        return redirect(url_for('dashboard'))
+        try:
+            name = request.form['name']
+            roll_number = request.form['roll_number']
+            subject1 = int(request.form['subject1'])
+            subject2 = int(request.form['subject2'])
+            subject3 = int(request.form['subject3'])
+            subject4 = int(request.form['subject4'])
+            subject5 = int(request.form['subject5'])
+
+            for mark in [subject1, subject2, subject3, subject4, subject5]:
+                if mark < 0 or mark > 100:
+                    return render_template('edit_student.html', student=(serial_number, name, roll_number, subject1, subject2, subject3, subject4, subject5), error="Marks must be between 0 and 100")
+
+            updated_data = (
+                name,
+                roll_number,
+                subject1,
+                subject2,
+                subject3,
+                subject4,
+                subject5,
+                serial_number
+            )
+            cursor.execute('''UPDATE students SET name=?, roll_number=?, subject1=?, subject2=?,
+                              subject3=?, subject4=?, subject5=? WHERE serial_number=?''', updated_data)
+            conn.commit()
+            conn.close()
+            return redirect(url_for('dashboard'))
+
+        except ValueError:
+            return render_template('edit_student.html', student=(serial_number, request.form['name'], request.form['roll_number'],
+                                                                 request.form['subject1'], request.form['subject2'], request.form['subject3'],
+                                                                 request.form['subject4'], request.form['subject5']),
+                                   error="Invalid marks entered")
     else:
         cursor.execute("SELECT * FROM students WHERE serial_number=?", (serial_number,))
         student = cursor.fetchone()
         conn.close()
         return render_template('edit_student.html', student=student)
+
 
 
 # ------------------------ DELETE STUDENT ------------------------

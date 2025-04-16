@@ -5,7 +5,8 @@ import sqlite3
 # Initialize Cohere API Client
 co = cohere.Client(os.environ.get('COHERE_API_KEY'))  # Replace with your Cohere API key
 
-def generate_study_plan_ai(student):  # Replace with your Cohere API key
+def generate_study_plan_ai(student):  
+    # Replace with your Cohere API key
 
     name = student[1]
     # Updated subjects list
