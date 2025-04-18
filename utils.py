@@ -5,18 +5,25 @@ import sqlite3
 # Initialize Cohere API Client
 co = cohere.Client(os.environ.get('COHERE_API_KEY'))  # Replace with your Cohere API key
 
-def generate_study_plan_ai(student):  
-    # Replace with your Cohere API key
-
+def generate_study_plan_ai(student):
     name = student[1]
-    # Updated subjects list
+    marks = student[3:8]
     subjects = ['DAA', 'SPM', 'CA', 'GT', 'CN']
 
+    subject_marks = list(zip(subjects, marks))
+    weak_subjects = [sub for sub, mark in subject_marks if mark < 60]
+    strong_subjects = [sub for sub, mark in subject_marks if mark > 80]
+
     study_plan_prompt = f"""
-    Create a personalized study plan for a student named {name} who is studying the following subjects:
-    {', '.join(subjects)}.
-    The student needs improvement in SPM and GT and excels in DAA. Focus on daily practice for weak subjects and encourage deeper understanding in strong subjects.
-    Provide a schedule for each subject with goals for each week.
+    Create a personalized weekly study plan for a student named {name}.
+    The student is studying: {', '.join(subjects)}.
+
+    Subjects they are STRONG in: {', '.join(strong_subjects)}.
+    Subjects they are WEAK in: {', '.join(weak_subjects)}.
+
+    Focus more time on weak subjects with daily exercises.
+    For strong subjects, suggest revision and deeper learning.
+    Include weekly goals and a simple daily routine.
     """
 
     response = co.generate(
@@ -27,6 +34,7 @@ def generate_study_plan_ai(student):
     )
 
     return response.generations[0].text.strip()
+
 
 
 def get_student_data(serial_number):
