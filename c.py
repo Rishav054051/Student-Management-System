@@ -1,4 +1,4 @@
-import cohere
+import cohere #to check for api key
 
 # Replace this with your actual key
 API_KEY = '2cMoENwLIbbF5XNamWZuwWewmehx6VCqvY0oCPyS'
